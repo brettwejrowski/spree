@@ -272,7 +272,7 @@ SQL
   def self.prepare_taxon_conditions(taxons,taxon_name)
     taxon_name = "taxons" if taxon_name.nil?
     ids = taxons.map{|taxon| taxon.self_and_descendants.map(&:id)}.flatten.uniq
-    { :joins => "JOIN products_taxons AS #{taxon_name}_product ON product.id = #{taxon_name}_product.product_id 
+    { :joins => "JOIN products_taxons AS #{taxon_name}_product ON products.id = #{taxon_name}_product.product_id 
                  JOIN taxons AS #{taxon_name} ON #{taxon_name}.id = #{taxon_name}_product.taxon_id",
       :conditions => ["#{taxon_name}.id IN (?)", ids] }
   end
