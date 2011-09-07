@@ -269,8 +269,9 @@ SQL
   end
 
   # specifically avoid having an order for taxon search (conflicts with main order)
-  def self.prepare_taxon_conditions(taxons)
+  def self.prepare_taxon_conditions(taxons,taxon_name)
+    taxon_name = "taxons" if taxon_name.nil?
     ids = taxons.map{|taxon| taxon.self_and_descendants.map(&:id)}.flatten.uniq
-    { :joins => :taxons, :conditions => ["taxons.id IN (?)", ids] }
+    { :joins => taxon_name.to_sym, :conditions => ["#{taxon_name}.id IN (?)", ids] }
   end
 end
