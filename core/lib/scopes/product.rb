@@ -6,6 +6,7 @@ module Scopes::Product
     :taxon => {
       :taxons_name_eq => [:taxon_name],
       :in_taxons => [:taxon_names],
+      :in_taxons_with_name => [:taxon_name , :taxons]
     },
     # product selection based on name, or search
     :search => {
@@ -104,6 +105,15 @@ module Scopes::Product
     taxons = get_taxons(taxons)
     taxons.first ? prepare_taxon_conditions(taxons) : {}
   }
+  
+  # This scope selects products in all taxons AND all its descendants
+  # This also seperates the taxon join 
+  #
+  Product.scope :in_taxons_with_name, lambda {|taxon_name,*taxons|
+    taxons = get_taxons(taxons)
+    taxons.first ? prepare_taxon_conditions(taxons,taxon_name) : {}
+  }
+  
 
   # for quick access to products in a group, WITHOUT using the association mechanism
   Product.scope :in_cached_group, lambda {|product_group|
